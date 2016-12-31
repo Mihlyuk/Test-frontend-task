@@ -1,0 +1,144 @@
+section {
+    height: 100%;
+}
+
+section md-content {
+    background-color: #f7f7f7;
+}
+
+section md-sidenav {
+    background-color: #292c33;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+md-sidenav .user-card {
+    box-shadow: none;
+    background-color: #292c33;
+    margin: 0 0 100px;
+}
+
+.user-card md-card-title {
+    padding: 20px 20px 0 20px;
+    color: white;
+}
+
+.user-card .card-media {
+    margin-right: 20px;
+}
+
+.user-card .md-headline {
+    font-size: 16px;
+}
+
+.user-card .card-media {
+    width: 55px;
+}
+
+md-list {
+    padding: 0;
+}
+
+md-list-item {
+    color: white;
+    padding: 0;
+}
+
+.project-list md-list-item {
+    margin-bottom: 0;
+    height: 0;
+}
+
+.project-list .md-secondary-container {
+    height: 0;
+}
+
+.project-list .md-ripple-container {
+    border-radius: 5px;
+}
+
+.project-list div.md-button {
+    border-radius: 5px;
+
+}
+
+.project-list button.md-button {
+    color: white;
+    height: 0;
+    border-radius: 5px;
+}
+
+.project-list .md-list-item-inner {
+    line-height: 15px;
+    border-radius: 5px;
+}
+
+.project-hat {
+    margin: 0;
+    color: white;
+}
+
+.project-hat md-list-item {
+    padding-right: 5px;
+}
+
+.project-hat .md-secondary {
+    min-width: 0;
+}
+
+.icons8-search, .icons8-more {
+    font-size: 21px;
+    color: #b3bbca;
+}
+
+.dropdown-more {
+    position: absolute;
+    top: 0;
+    right: 4px;
+}
+
+.task-block {
+    box-shadow: rgba(0, 0, 0, 0.32) -2px 4px 19px 1px;
+    border-radius: 8px;
+    width: 55%;
+    margin: auto auto 20px;
+}
+
+.task {
+    color: black;
+}
+
+.add-task {
+    line-height: 0;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+}
+
+.add-task i {
+    display: table-cell;
+    vertical-align: middle;
+    font-size: 22px;
+}
+
+.search {
+    margin: 0;
+    padding: 0;
+    height: 38px;
+    width: 50%;
+}
+
+.more-tasks {
+    width: 56%;
+    margin-left: 22%;
+}
+
+.task-block {
+    margin-top: 40px;
+    position: relative;
+}
+
+.task-block .date {
+    position: absolute;
+    top: -45px;
+}

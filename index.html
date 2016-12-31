@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en" ng-app="testApp">
+
+<head>
+    <meta charset="utf-8">
+    <title>Test</title>
+
+    <link rel="stylesheet" href="bower_components/angular-material/angular-material.css">
+    <script src="bower_components/moment/moment.js"></script>
+    <link rel="stylesheet" href="vendors/css/styles.min.css">
+    <link rel="stylesheet" href="css/app.css">
+</head>
+
+<body ng-controller="AppCtrl">
+
+<section layout="row" flex>
+
+    <md-sidenav
+            class="md-sidenav-left"
+            md-component-id="left"
+            md-is-locked-open="$mdMedia('gt-md')"
+            md-whiteframe="4">
+
+        <md-card class="user-card">
+            <md-card-title>
+                <md-card-title-media>
+                    <div class="md-media-sm card-media">
+                        <img ng-src={{imageUrl}} alt={{username}}/>
+                    </div>
+                </md-card-title-media>
+                <md-card-title-text>
+                    <span class="md-headline">{{username}}</span>
+                </md-card-title-text>
+            </md-card-title>
+        </md-card>
+
+        <md-list class="project-hat" ng-cloak>
+            <md-list-item class="secondary-button-padding">
+                <p>Projects</p>
+                <i class="icons8-plus md-secondary" ng-click="addProject($event)"></i>
+            </md-list-item>
+        </md-list>
+
+        <md-list class="project-list" ng-cloak>
+            <md-list-item class="secondary-button-padding" ng-repeat="project in projects"
+                          ng-click="chooseProject(project)">
+                <p>{{project.title}}</p>
+                <p class="md-secondary">{{project.task_count}}</p>
+            </md-list-item>
+        </md-list>
+
+
+    </md-sidenav>
+
+    <md-content flex layout-padding>
+        <i class="icons8-search"></i>
+
+        <md-input-container class="search" md-theme="input" flex style="padding: 0; margin: 0;">
+            <label>&nbsp;</label>
+            <input placeholder="Enter search" ng-model="searchQuery" ng-change="search($event)">
+        </md-input-container>
+
+        <md-menu class="dropdown-more">
+            <md-button aria-label="Open phone interactions menu" class="md-icon-button"
+                       ng-click="openMenu($mdOpenMenu, $event)">
+                <i class="icons8-more"></i>
+            </md-button>
+            <md-menu-content width="4">
+                <md-menu-item>
+                    <md-button ng-click="editProject($event)">Edit Project</md-button>
+                </md-menu-item>
+                <md-menu-item>
+                    <md-button ng-click="removeProject()">Remove Project</md-button>
+                </md-menu-item>
+            </md-menu-content>
+        </md-menu>
+
+        <md-divider></md-divider>
+
+        <div class="task-block" ng-show="tasks.length > 0" ng-repeat="taskBlock in tasks">
+            <p class="date">{{taskBlock[0].fromNow}}</p>
+            <div ng-repeat="task in taskBlock">
+                <md-list-item class="task">
+                    <md-checkbox ng-click="removeTask(task)"></md-checkbox>
+                    <p>{{task.title}}</p>
+                </md-list-item>
+                <md-divider ng-show="$index + 1 < taskBlock.length"></md-divider>
+            </div>
+        </div>
+
+        <md-button class="more-tasks md-raised md-primary" ng-show="total_count > tasksLength()" ng-click="pagination()">
+            More tasks
+        </md-button>
+
+        <md-button class="add-task md-fab md-mini md-primary" aria-label="Use Android" ng-click="addTask($event)">
+            <i class="icons8-plus" style="line-height:0"></i>
+        </md-button>
+    </md-content>
+</section>
+
+</div>
+
+<script src="bower_components/angular/angular.js"></script>
+<script src="bower_components/angular-aria/angular-aria.js"></script>
+<script src="bower_components/angular-messages/angular-messages.js"></script>
+<script src="bower_components/angular-animate/angular-animate.js"></script>
+<script src="bower_components/angular-material/angular-material.js"></script>
+<script src="bower_components/angular-cookies/angular-cookies.js"></script>
+
+<script src="js/controllers.js"></script>
+</body>
+</html>
