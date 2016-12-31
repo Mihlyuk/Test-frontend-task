@@ -68,82 +68,85 @@ angular.module('testApp', ['ngMaterial', 'ngCookies'])
                     $scope.tasks = task_sort($scope.tasks);
                 })
             });
-//////////////////////////////////////////////////////////
-            $scope.chooseProject = function (project) {
-                $scope.currentProject = project;
-                var url = 'https://api-test-task.decodeapps.io/tasks?session=' + session +
-                    '&project_id=' + project.id + '&paging_size=' + PAGING_SIZE + '&paging_offset=0';
-
-                $http.get(url).then(function (response) {
-                    $scope.offset = 0;
-                    $scope.total_count = response.data.total_count;
-                    $scope.tasks = response.data.tasks.map(function (task) {
-                        task.Task.fromNow = moment(task.Task.created_at).format('dddd (DD.MM.YYYY)');
-                        return task.Task;
-                    });
-                    $scope.tasks = task_sort($scope.tasks);
-                });
-            };
-////////////////////////////////////////////////////
-            $scope.pagination = function () {
-                var total = $scope.total_count;
-                var offset = $scope.offset + PAGING_SIZE;
-                var paging_size = total - (PAGING_SIZE * offset) > PAGING_SIZE ? PAGING_SIZE : total - (PAGING_SIZE * offset);
-
-                var url = 'https://api-test-task.decodeapps.io/tasks?session=' + session +
-                    '&project_id=' + $scope.currentProject.id + '&paging_size=' + paging_size + '&paging_offset=' + offset;
-
-                $http.get(url).then(function (response) {
-                    var tasks = response.data.tasks;
-
-                    $scope.total_count = response.data.total_count;
-                    tasks.forEach(function (task) {
-                        task.Task.fromNow = moment(task.Task.created_at).format('dddd (DD.MM.YYYY)');
-                        $scope.tasks = addTaskToEnd($scope.tasks, task.Task);
-                    });
-                });
-            };
-////////////////////////////////////////////////
-            $scope.addTask = function (event) {
-                var confirm = $mdDialog.prompt()
-                    .title('Input please task name')
-                    .placeholder('Task name')
-                    .ariaLabel('Task name')
-                    .targetEvent(event)
-                    .ok('Create')
-                    .cancel('Cancel');
-
-                $mdDialog.show(confirm).then(function (result) {
-                    var currentProject = $scope.currentProject,
-                        session = $cookies.get('userSession'),
-                        url = 'https://api-test-task.decodeapps.io/tasks/task',
-                        data = {
-                            'session': session,
-                            'Project': {
-                                'id': currentProject.id
-                            },
-                            'Task': {
-                                'title': result
-                            }
-                        };
-
-                    $http.post(url, data).then(function (response) {
-                        var taskId = response.data.Task.id;
-
-                        $http.get('https://api-test-task.decodeapps.io/tasks/task?session=' + session + '&task_id=' + taskId).then(function (responce) {
-                            var newTask = responce.data.Task;
-
-                            newTask.fromNow = moment(newTask.created_at).format('dddd (DD.MM.YYYY)');
-
-                            $scope.tasks = addTask($scope.tasks, newTask);
-                            $scope.total_count += 1;
-                            $scope.currentProject.task_count = +$scope.currentProject.task_count + 1;
-
-                        });
-                    });
-                });
-            };
         }
+
+
+//////////////////////////////////////////////////////////
+        $scope.chooseProject = function (project) {
+            $scope.currentProject = project;
+            var url = 'https://api-test-task.decodeapps.io/tasks?session=' + session +
+                '&project_id=' + project.id + '&paging_size=' + PAGING_SIZE + '&paging_offset=0';
+
+            $http.get(url).then(function (response) {
+                $scope.offset = 0;
+                $scope.total_count = response.data.total_count;
+                $scope.tasks = response.data.tasks.map(function (task) {
+                    task.Task.fromNow = moment(task.Task.created_at).format('dddd (DD.MM.YYYY)');
+                    return task.Task;
+                });
+                $scope.tasks = task_sort($scope.tasks);
+            });
+        };
+////////////////////////////////////////////////////
+        $scope.pagination = function () {
+            var total = $scope.total_count;
+            var offset = $scope.offset + PAGING_SIZE;
+            var paging_size = total - (PAGING_SIZE * offset) > PAGING_SIZE ? PAGING_SIZE : total - (PAGING_SIZE * offset);
+
+            var url = 'https://api-test-task.decodeapps.io/tasks?session=' + session +
+                '&project_id=' + $scope.currentProject.id + '&paging_size=' + paging_size + '&paging_offset=' + offset;
+
+            $http.get(url).then(function (response) {
+                var tasks = response.data.tasks;
+
+                $scope.total_count = response.data.total_count;
+                tasks.forEach(function (task) {
+                    task.Task.fromNow = moment(task.Task.created_at).format('dddd (DD.MM.YYYY)');
+                    $scope.tasks = addTaskToEnd($scope.tasks, task.Task);
+                });
+            });
+        };
+////////////////////////////////////////////////
+        $scope.addTask = function (event) {
+            debugger;
+            var confirm = $mdDialog.prompt()
+                .title('Input please task name')
+                .placeholder('Task name')
+                .ariaLabel('Task name')
+                .targetEvent(event)
+                .ok('Create')
+                .cancel('Cancel');
+
+            $mdDialog.show(confirm).then(function (result) {
+                var currentProject = $scope.currentProject,
+                    session = $cookies.get('userSession'),
+                    url = 'https://api-test-task.decodeapps.io/tasks/task',
+                    data = {
+                        'session': session,
+                        'Project': {
+                            'id': currentProject.id
+                        },
+                        'Task': {
+                            'title': result
+                        }
+                    };
+
+                $http.post(url, data).then(function (response) {
+                    var taskId = response.data.Task.id;
+
+                    $http.get('https://api-test-task.decodeapps.io/tasks/task?session=' + session + '&task_id=' + taskId).then(function (responce) {
+                        var newTask = responce.data.Task;
+
+                        newTask.fromNow = moment(newTask.created_at).format('dddd (DD.MM.YYYY)');
+
+                        $scope.tasks = addTask($scope.tasks, newTask);
+                        $scope.total_count += 1;
+                        $scope.currentProject.task_count = +$scope.currentProject.task_count + 1;
+
+                    });
+                });
+            });
+        };
 ////////////////////////////////////////////
         $scope.removeTask = function (task) {
             var session = $cookies.get('userSession'),
