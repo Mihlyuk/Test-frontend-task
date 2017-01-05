@@ -1,3 +1,1 @@
-'use strict';
-
-/* App Module */
+var app = angular.module('testApp', ['ngMaterial', 'ngCookies', 'ngResource']);

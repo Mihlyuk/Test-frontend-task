@@ -13,19 +13,14 @@
 
 <body ng-controller="AppCtrl">
 
-<section layout="row" flex>
-
-    <md-sidenav
-            class="md-sidenav-left"
-            md-component-id="left"
-            md-is-locked-open="$mdMedia('gt-md')"
-            md-whiteframe="4">
+<section layout="row">
+    <md-sidenav md-is-locked-open="true" class="md-whiteframe-4dp">
 
         <md-card class="user-card">
             <md-card-title>
                 <md-card-title-media>
                     <div class="md-media-sm card-media">
-                        <img ng-src={{imageUrl}} alt={{username}}/>
+                        <img ng-src="{{accountImageUrl}}" alt={{username}}/>
                     </div>
                 </md-card-title-media>
                 <md-card-title-text>
@@ -37,7 +32,7 @@
         <md-list class="project-hat" ng-cloak>
             <md-list-item class="secondary-button-padding">
                 <p>Projects</p>
-                <i class="icons8-plus md-secondary" ng-click="addProject($event)"></i>
+                <i class="icons8-plus md-secondary" ng-click="createProject($event)"></i>
             </md-list-item>
         </md-list>
 
@@ -49,10 +44,9 @@
             </md-list-item>
         </md-list>
 
-
     </md-sidenav>
 
-    <md-content flex layout-padding>
+    <md-content flex>
         <i class="icons8-search"></i>
 
         <md-input-container class="search" md-theme="input" flex style="padding: 0; margin: 0;">
@@ -77,8 +71,8 @@
 
         <md-divider></md-divider>
 
-        <div class="task-block" ng-show="tasks.length > 0" ng-repeat="taskBlock in tasks">
-            <p class="date">{{taskBlock[0].fromNow}}</p>
+        <div class="task-block" ng-show="tasks.length > 0" ng-repeat="taskBlock in sortTasks">
+            <p class="date">{{relativeDate(taskBlock[0].created_at)}}</p>
             <div ng-repeat="task in taskBlock">
                 <md-list-item class="task">
                     <md-checkbox ng-click="removeTask(task)"></md-checkbox>
@@ -88,11 +82,11 @@
             </div>
         </div>
 
-        <md-button class="more-tasks md-raised md-primary" ng-show="total_count > tasksLength()" ng-click="pagination()">
+        <md-button class="more-tasks md-raised md-primary" ng-show="totalCount > tasks.length" ng-click="loadNewTasks()">
             More tasks
         </md-button>
 
-        <md-button class="add-task md-fab md-mini md-primary" ng-click="addTask($event)">
+        <md-button class="add-task md-fab md-mini md-primary" ng-click="createTask($event)">
             <i class="icons8-plus" style="line-height:0"></i>
         </md-button>
     </md-content>
@@ -106,7 +100,13 @@
 <script src="bower_components/angular-animate/angular-animate.js"></script>
 <script src="bower_components/angular-material/angular-material.js"></script>
 <script src="bower_components/angular-cookies/angular-cookies.js"></script>
+<script src="bower_components/angular-resource/angular-resource.js"></script>
 
+<script src="js/middlewars.js"></script>
+<script src="js/app.js"></script>
+<script src="js/constants.js"></script>
+<script src="js/factory.js"></script>
 <script src="js/controllers.js"></script>
+
 </body>
 </html>
