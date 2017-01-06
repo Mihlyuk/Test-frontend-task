@@ -98,6 +98,9 @@ app.factory('Task', ['$resource', function ($resource) {
                 session: '@session',
                 task_id: '@task_id'
             }
+        },
+        update: {
+            method: 'POST'
         }
     })
 }]);

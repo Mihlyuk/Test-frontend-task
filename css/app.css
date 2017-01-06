@@ -8,8 +8,6 @@ section md-content {
 
 section md-sidenav {
     background-color: #292c33;
-    padding-left: 15px;
-    padding-right: 15px;
 }
 
 md-sidenav .user-card {
@@ -91,6 +89,30 @@ md-list-item {
     color: #b3bbca;
 }
 
+.icons8-delete-2 p {
+    padding: 0;
+    margin: 0;
+    font-size: 8px;
+}
+
+.task-remove-delete {
+    position: absolute;
+    right: 4px;
+    top: 5px;
+}
+
+.task-remove-delete .rename-task {
+    font-size: 15px;
+    margin-right: -16px;
+    margin-left: 0;
+}
+
+.task-remove-delete .remove-task {
+    font-size: 15px;
+    margin-right: 0;
+    margin-left: 0;
+}
+
 .dropdown-more {
     position: absolute;
     top: 0;
@@ -142,3 +164,74 @@ md-list-item {
     position: absolute;
     top: -45px;
 }
+
+.right-sidenav {
+    padding: 0;
+}
+
+.right-sidenav md-toolbar {
+    min-height: 0;
+    background-color: #292c33;
+}
+
+.right-sidenav .title {
+    font-size: 14px;
+    margin: 15px auto;
+}
+
+.right-sidenav md-content {
+    background-color: #292c33;
+    padding-right: 24px;
+    padding-left: 24px;
+}
+
+.right-sidenav .md-block input {
+    color: rgba(255, 255, 255, 0.87);
+}
+
+.right-sidenav .md-block input::-webkit-input-placeholder {
+    color: rgba(163, 163, 163, 0.65);
+}
+
+.right-sidenav p.description {
+    padding: 0 40px;
+    font-size: 12px;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.close-new-project {
+    display: inline-block;
+    position: absolute;
+    top: 2px;
+    left: 0;
+}
+
+.close-new-project:after {
+    content: 'ESC';
+    position: absolute;
+    top: 19px;
+    left: 11px;
+    font-size: 10px;
+}
+
+.empty-tasks {
+    text-align: center;
+    margin-top: 16%;
+    color: rgba(0, 0, 0, 0.32);
+}
+
+.spinner {
+    text-align: center;
+    margin-top: 16%;
+    color: rgba(0, 0, 0, 0.32);
+}
+
+.spinner md-progress-circular {
+    margin: auto;
+}
+
+
+
+
+

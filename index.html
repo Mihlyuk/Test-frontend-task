@@ -32,7 +32,7 @@
         <md-list class="project-hat" ng-cloak>
             <md-list-item class="secondary-button-padding">
                 <p>Projects</p>
-                <i class="icons8-plus md-secondary" ng-click="createProject($event)"></i>
+                <i class="icons8-plus md-secondary" ng-click="openCreateProject()"></i>
             </md-list-item>
         </md-list>
 
@@ -46,7 +46,7 @@
 
     </md-sidenav>
 
-    <md-content flex>
+    <md-content flex layout-padding>
         <i class="icons8-search"></i>
 
         <md-input-container class="search" md-theme="input" flex style="padding: 0; margin: 0;">
@@ -61,7 +61,7 @@
             </md-button>
             <md-menu-content width="4">
                 <md-menu-item>
-                    <md-button ng-click="editProject($event)">Edit Project</md-button>
+                    <md-button ng-click="openEditProject()">Edit Project</md-button>
                 </md-menu-item>
                 <md-menu-item>
                     <md-button ng-click="removeProject()">Remove Project</md-button>
@@ -71,25 +71,163 @@
 
         <md-divider></md-divider>
 
-        <div class="task-block" ng-show="tasks.length > 0" ng-repeat="taskBlock in sortTasks">
-            <p class="date">{{relativeDate(taskBlock[0].created_at)}}</p>
-            <div ng-repeat="task in taskBlock">
-                <md-list-item class="task">
-                    <md-checkbox ng-click="removeTask(task)"></md-checkbox>
-                    <p>{{task.title}}</p>
-                </md-list-item>
-                <md-divider ng-show="$index + 1 < taskBlock.length"></md-divider>
-            </div>
+        <div class="spinner" ng-show="loading">
+            <md-progress-circular class="md-hue-2" md-diameter="60px"></md-progress-circular>
         </div>
 
-        <md-button class="more-tasks md-raised md-primary" ng-show="totalCount > tasks.length" ng-click="loadNewTasks()">
-            More tasks
-        </md-button>
+        <div class="tasks" ng-hide="loading">
+            <div class="task-block" ng-show="tasks.length > 0" ng-repeat="taskBlock in sortTasks">
+                <p class="date">{{relativeDate(taskBlock[0].created_at)}}</p>
+                <div ng-repeat="task in taskBlock">
+                    <md-list-item class="task" ng-click="openTaskDescription(task)">
+                        <md-checkbox ng-click="removeTask(task)"></md-checkbox>
+                        <p>{{task.title}}</p>
+                    </md-list-item>
+                    <md-divider ng-show="$index + 1 < taskBlock.length"></md-divider>
+                </div>
+            </div>
 
-        <md-button class="add-task md-fab md-mini md-primary" ng-click="createTask($event)">
-            <i class="icons8-plus" style="line-height:0"></i>
-        </md-button>
+            <div class="empty-tasks" ng-show="tasks.length <= 0">
+                <i class="icons8-todo-list" style="font-size: 160px;"></i>
+            </div>
+
+            <md-button class="more-tasks md-raised md-primary" ng-show="totalCount > tasks.length"
+                       ng-click="loadNewTasks()">
+                More tasks
+            </md-button>
+
+            <md-button class="add-task md-fab md-mini md-primary" ng-click="openCreateTask()">
+                <i class="icons8-plus" style="line-height:0"></i>
+            </md-button>
+        </div>
     </md-content>
+
+    <!--SHOW TASK-->
+    <md-sidenav class="right-sidenav md-sidenav-right md-whiteframe-4dp" md-component-id="task-description"
+                layout="column">
+        <md-toolbar>
+            <md-button class="close-new-project md-icon-button" ng-click="closeTaskDescription()" aria-label="More">
+                <icon class="icons8-delete-2"></icon>
+            </md-button>
+
+            <h1 class="title">{{currentTask.title}}</h1>
+            <div class="task-remove-delete">
+                <md-button class="rename-task md-icon-button" ng-click="openEditTask()" aria-label="More">
+                    <i class="icons8-edit"></i>
+                </md-button>
+                <md-button class="remove-task md-icon-button" ng-click="removeTask(currentTask)" aria-label="More">
+                    <i class="icons8-delete"></i>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-content layout-padding flex>
+            <p class="description">{{currentTask.description}}</p>
+        </md-content>
+    </md-sidenav>
+
+    <!--CREATE TASK-->
+    <md-sidenav class="right-sidenav md-sidenav-right md-whiteframe-4dp" md-component-id="create-task"
+                layout="column">
+        <md-toolbar>
+            <md-button class="close-new-project md-icon-button" ng-click="closeCreateTask()" aria-label="More">
+                <icon class="icons8-delete-2"></icon>
+            </md-button>
+
+            <h1 class="title">Create new task</h1>
+        </md-toolbar>
+
+        <md-content layout-padding flex>
+            <md-input-container class="md-block" md-no-float>
+                <input ng-model="taskNameValue" placeholder="Task name">
+            </md-input-container>
+
+            <md-input-container class="md-block" md-no-float>
+                <input ng-model="descriptionValue" placeholder="Description">
+            </md-input-container>
+            <md-button ng-click="saveCreateTask(taskNameValue, descriptionValue)"
+                       class="add-task md-fab md-mini md-primary">
+                <i class="icons8-checkmark" style="line-height:0"></i>
+            </md-button>
+        </md-content>
+    </md-sidenav>
+
+    <!--CREATE PROJECT-->
+
+    <md-sidenav class="right-sidenav md-sidenav-right md-whiteframe-4dp" md-component-id="create-project"
+                layout="column">
+        <md-toolbar>
+            <md-button class="close-new-project md-icon-button" ng-click="closeCreateProject()" aria-label="More">
+                <icon class="icons8-delete-2"></icon>
+            </md-button>
+
+            <h1 class="title">Create new project</h1>
+        </md-toolbar>
+
+        <md-content layout-padding flex>
+            <md-input-container class="md-block" md-no-float>
+                <input ng-model="projectNameValue" placeholder="Project name">
+            </md-input-container>
+
+            <md-button ng-click="saveProjectCreate(projectNameValue)" class="add-task md-fab md-mini md-primary">
+                <i class="icons8-checkmark" style="line-height:0"></i>
+            </md-button>
+        </md-content>
+    </md-sidenav>
+
+    <!--EDIT TASK-->
+
+    <md-sidenav class="right-sidenav md-sidenav-right md-whiteframe-4dp" md-component-id="edit-task"
+                layout="column">
+        <md-toolbar>
+            <md-button class="close-new-project md-icon-button" ng-click="closeEditTask()" aria-label="More">
+                <icon class="icons8-delete-2"></icon>
+            </md-button>
+
+            <h1 class="title">Edit task</h1>
+        </md-toolbar>
+
+        <md-content layout-padding flex>
+            <md-input-container class="md-block" md-no-float>
+                <input ng-model="taskNameValue" placeholder="Task name" ng-value="currentTask.title">
+            </md-input-container>
+
+            <md-input-container class="md-block" md-no-float>
+                <input ng-model="descriptionValue" placeholder="Description" ng-value="currentTask.description">
+            </md-input-container>
+
+            <md-button ng-click="saveEditTask(taskNameValue, descriptionValue)"
+                       class="add-task md-fab md-mini md-primary">
+                <i class="icons8-checkmark" style="line-height:0"></i>
+            </md-button>
+
+        </md-content>
+    </md-sidenav>
+
+
+    <!--EDIT PROJECT-->
+
+    <md-sidenav class="right-sidenav md-sidenav-right md-whiteframe-4dp" md-component-id="edit-project"
+                layout="column">
+        <md-toolbar>
+            <md-button class="close-new-project md-icon-button" ng-click="closeEditProject()" aria-label="More">
+                <icon class="icons8-delete-2"></icon>
+            </md-button>
+
+            <h1 class="title">Edit project</h1>
+        </md-toolbar>
+
+        <md-content layout-padding>
+            <md-input-container class="md-block" md-no-float>
+                <input ng-model="projectNameValue" placeholder="Project name" ng-value="currentProject.title" autofocus>
+            </md-input-container>
+
+            <md-button ng-click="saveProjectEdit(projectNameValue)" class="add-task md-fab md-mini md-primary">
+                <i class="icons8-checkmark" style="line-height:0"></i>
+            </md-button>
+        </md-content>
+    </md-sidenav>
+
 </section>
 
 </div>

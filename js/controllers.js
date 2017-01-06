@@ -1,5 +1,6 @@
-app.controller('AppCtrl', ['$scope', '$cookies', '$http', '$mdDialog', 'SignUp', 'Account', 'Projects', 'Tasks', 'Task', 'Project',
-    function ($scope, $cookies, $http, $mdDialog, SignUp, Account, Projects, Tasks, Task, Project) {
+app.controller('AppCtrl', ['$scope', '$cookies', '$http', '$mdDialog', '$mdSidenav', 'SignUp', 'Account', 'Projects', 'Tasks', 'Task', 'Project',
+    function ($scope, $cookies, $http, $mdDialog, $mdSidenav, SignUp, Account, Projects, Tasks, Task, Project) {
+
         $scope.session = $cookies.get('userSession');
         $scope.username = null;
         $scope.accountImageUrl = null;
@@ -7,8 +8,10 @@ app.controller('AppCtrl', ['$scope', '$cookies', '$http', '$mdDialog', 'SignUp',
         $scope.searchQuery = '';
         $scope.totalCount = 0;
         $scope.currentProject = null;
+        $scope.currentTask = null;
         $scope.tasks = [];
         $scope.sortTasks = [];
+        $scope.loading = true;
 
         $scope.$watch('tasks', function () {
             $scope.sortTasks = sortByDate($scope.tasks);
@@ -30,16 +33,19 @@ app.controller('AppCtrl', ['$scope', '$cookies', '$http', '$mdDialog', 'SignUp',
         };
 
         $scope.updateProjects = function () {
+            $scope.loading = true;
             Projects.fetch({session: $scope.session}, function (data) {
                 $scope.projects = removeNesting(data.projects, 'Project');
                 if (!$scope.currentProject) {
                     $scope.currentProject = $scope.projects[0];
                 }
+                console.log($scope.currentProject);
                 $scope.updateTasks();
             });
         };
 
         $scope.updateTasks = function () {
+            $scope.loading = true;
             Tasks.fetch({
                 session: $scope.session,
                 project_id: $scope.currentProject.id,
@@ -49,10 +55,12 @@ app.controller('AppCtrl', ['$scope', '$cookies', '$http', '$mdDialog', 'SignUp',
             }, function (data) {
                 $scope.totalCount = data.total_count;
                 $scope.tasks = removeNesting(data.tasks, 'Task');
+                $scope.loading = false;
             });
         };
 
         $scope.loadNewTasks = function () {
+            $scope.loading = true;
             Tasks.fetch({
                 session: $scope.session,
                 project_id: $scope.currentProject.id,
@@ -60,6 +68,7 @@ app.controller('AppCtrl', ['$scope', '$cookies', '$http', '$mdDialog', 'SignUp',
                 paging_offset: $scope.tasks.length
             }, function (data) {
                 $scope.tasks = $scope.tasks.concat(removeNesting(data.tasks, 'Task'));
+                $scope.loading = false;
             });
         };
 
@@ -67,61 +76,46 @@ app.controller('AppCtrl', ['$scope', '$cookies', '$http', '$mdDialog', 'SignUp',
             $scope.currentProject = project;
         };
 
-        $scope.createTask = function (event) {
-            var confirm = $mdDialog.prompt()
-                .title('Input please task name')
-                .placeholder('Task name')
-                .ariaLabel('Task name')
-                .targetEvent(event)
-                .ok('Create')
-                .cancel('Cancel');
-
-            $mdDialog.show(confirm).then(function (taskName) {
-                Task.create({}, {
-                    session: $scope.session,
-                    Project: {
-                        id: $scope.currentProject.id
-                    },
-                    Task: {
-                        title: taskName,
-                        description: EXAMPLE_DESCRIPTION
-                    }
-                }, function () {
-                    $scope.currentProject.task_count = +$scope.currentProject.task_count + 1;
-                    $scope.updateTasks();
-                });
+        $scope.createTask = function (taskName, taskDescription) {
+            $scope.loading = true;
+            Task.create({}, {
+                session: $scope.session,
+                Project: {
+                    id: $scope.currentProject.id
+                },
+                Task: {
+                    title: taskName,
+                    description: taskDescription
+                }
+            }, function () {
+                $scope.currentProject.task_count = +$scope.currentProject.task_count + 1;
+                $scope.updateTasks();
             });
         };
 
         $scope.removeTask = function (task) {
+            $scope.loading = true;
+            $mdSidenav('task-description').close();
             Task.remove({session: $scope.session, task_id: task.id}, function () {
                 $scope.currentProject.task_count = $scope.currentProject.task_count - 1;
                 $scope.updateTasks();
             });
         };
 
-        $scope.createProject = function (event) {
-            var confirm = $mdDialog.prompt()
-                .title('Input please project name')
-                .placeholder('Project name')
-                .ariaLabel('Project name')
-                .targetEvent(event)
-                .ok('Create')
-                .cancel('Cancel');
-
-            $mdDialog.show(confirm).then(function (result) {
-                Project.create({}, {
-                    'session': $scope.session,
-                    'Project': {
-                        'title': result
-                    }
-                }, function () {
-                    $scope.updateProjects();
-                });
+        $scope.createProject = function (projectName) {
+            $scope.loading = true;
+            Project.create({}, {
+                'session': $scope.session,
+                'Project': {
+                    'title': projectName
+                }
+            }, function () {
+                $scope.updateProjects();
             });
         };
 
         $scope.removeProject = function () {
+            $scope.loading = true;
             Project.delete({session: $scope.session, project_id: $scope.currentProject.id}, function () {
                 $scope.currentProject = null;
                 $scope.updateProjects();
@@ -136,29 +130,106 @@ app.controller('AppCtrl', ['$scope', '$cookies', '$http', '$mdDialog', 'SignUp',
             $mdOpenMenu(ev);
         };
 
-        $scope.editProject = function (event) {
-            var confirm = $mdDialog.prompt()
-                .title('Edit project name')
-                .placeholder('Project name')
-                .initialValue($scope.currentProject.title)
-                .ariaLabel('Project name')
-                .targetEvent(event)
-                .ok('Save')
-                .cancel('Cancel');
-
-            $mdDialog.show(confirm).then(function (result) {
-                Project.update({}, {
-                    session: $scope.session,
-                    Project: {
-                        id: $scope.currentProject.id,
-                        title: result
-                    }
-                }, function (data) {
-                    $scope.currentProject = data.Project;
-                    $scope.updateProjects();
-                });
+        $scope.editProject = function (projectName) {
+            $scope.loading = true;
+            Project.update({}, {
+                session: $scope.session,
+                Project: {
+                    id: $scope.currentProject.id,
+                    title: projectName
+                }
+            }, function (data) {
+                $scope.currentProject = data.Project;
+                $scope.updateProjects();
             });
         };
+
+        $scope.editTask = function (taskName, taskDescription) {
+            $scope.loading = true;
+            Task.update({}, {
+                session: $scope.session,
+                Task: {
+                    id: $scope.currentTask.id,
+                    title: taskName,
+                    description: taskDescription
+                }
+            }, function (data) {
+                $scope.currentTask = data.Task;
+                $scope.updateTasks();
+            });
+        };
+
+        $scope.openTaskDescription = function (task) {
+            $scope.currentTask = task;
+            $mdSidenav('task-description').open();
+        };
+
+        $scope.closeTaskDescription = function () {
+            $mdSidenav('task-description').close();
+        };
+
+        $scope.openCreateTask = function () {
+            $mdSidenav('create-task').open();
+        };
+
+        $scope.saveCreateTask = function (taskName, description) {
+            if (taskName && description) {
+                $scope.createTask(taskName, description);
+                $mdSidenav('create-task').close();
+            }
+        };
+
+        $scope.closeCreateTask = function () {
+            $mdSidenav('create-task').close();
+        };
+
+        $scope.openCreateProject = function () {
+            $mdSidenav('create-project').open();
+        };
+
+        $scope.saveProjectCreate = function (projectName) {
+            if (projectName) {
+                $scope.createProject(projectName);
+                $mdSidenav('create-project').close();
+            }
+        };
+
+        $scope.closeCreateProject = function () {
+            $mdSidenav('create-project').close();
+        };
+
+        $scope.openEditProject = function () {
+            $mdSidenav('edit-project').open();
+        };
+
+
+        $scope.saveProjectEdit = function (projectName) {
+            if (projectName) {
+                $scope.editProject(projectName);
+                $mdSidenav('edit-project').close();
+            }
+        };
+
+        $scope.closeEditProject = function () {
+            $mdSidenav('edit-project').close();
+        };
+
+        $scope.openEditTask = function () {
+            $mdSidenav('task-description').close();
+            $mdSidenav('edit-task').open();
+        };
+
+        $scope.saveEditTask = function (taskName, taskDescription) {
+            if (taskName && taskDescription) {
+                $scope.editTask(taskName, taskDescription);
+                $mdSidenav('edit-task').close();
+            }
+        };
+
+        $scope.closeEditTask = function () {
+            $mdSidenav('edit-task').close();
+        };
+
 
         $scope.search = function () {
             $scope.updateTasks();
