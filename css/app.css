@@ -131,7 +131,6 @@ md-list-item {
 }
 
 .add-task {
-    line-height: 0;
     position: fixed;
     bottom: 20px;
     right: 20px;
@@ -141,6 +140,10 @@ md-list-item {
     display: table-cell;
     vertical-align: middle;
     font-size: 22px;
+}
+
+.add-task .icons8-plus {
+    display: block;
 }
 
 .search {
