@@ -139,13 +139,13 @@
 
         <md-content layout-padding flex>
             <md-input-container class="md-block" md-no-float>
-                <input ng-model="taskNameValue" placeholder="Task name">
+                <input ng-model="taskNameValueCreate" placeholder="Task name">
             </md-input-container>
 
             <md-input-container class="md-block" md-no-float>
-                <input ng-model="descriptionValue" placeholder="Description">
+                <input ng-model="descriptionValueCreate" placeholder="Description">
             </md-input-container>
-            <md-button ng-click="saveCreateTask(taskNameValue, descriptionValue)"
+            <md-button ng-click="saveCreateTask(taskNameValueCreate, descriptionValueCreate)"
                        class="add-task md-fab md-mini md-primary">
                 <i class="icons8-checkmark" style="line-height:0"></i>
             </md-button>
@@ -189,14 +189,14 @@
 
         <md-content layout-padding flex>
             <md-input-container class="md-block" md-no-float>
-                <input ng-model="taskNameValue" placeholder="Task name" ng-value="currentTask.title">
+                <input ng-model="taskNameValueEdit" placeholder="Task name" ng-value="currentTask.title">
             </md-input-container>
 
             <md-input-container class="md-block" md-no-float>
-                <input ng-model="descriptionValue" placeholder="Description" ng-value="currentTask.description">
+                <input ng-model="descriptionValueEdit" placeholder="Description" ng-value="currentTask.description">
             </md-input-container>
 
-            <md-button ng-click="saveEditTask(taskNameValue, descriptionValue)"
+            <md-button ng-click="saveEditTask(taskNameValueEdit, descriptionValueEdit)"
                        class="add-task md-fab md-mini md-primary">
                 <i class="icons8-checkmark" style="line-height:0"></i>
             </md-button>

@@ -179,7 +179,8 @@ md-list-item {
 
 .right-sidenav .title {
     font-size: 14px;
-    margin: 15px auto;
+    text-align: center;
+    margin-top: 15px;
 }
 
 .right-sidenav md-content {

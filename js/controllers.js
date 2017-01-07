@@ -176,6 +176,8 @@ app.controller('AppCtrl', ['$scope', '$cookies', '$http', '$mdDialog', '$mdSiden
             if (taskName && description) {
                 $scope.createTask(taskName, description);
                 $mdSidenav('create-task').close();
+                $scope.taskNameValueCreate = null;
+                $scope.descriptionValueCreate = null;
             }
         };
 
@@ -191,6 +193,7 @@ app.controller('AppCtrl', ['$scope', '$cookies', '$http', '$mdDialog', '$mdSiden
             if (projectName) {
                 $scope.createProject(projectName);
                 $mdSidenav('create-project').close();
+                $scope.projectNameValue = null;
             }
         };
 
