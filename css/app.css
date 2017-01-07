@@ -131,7 +131,7 @@ md-list-item {
 }
 
 .add-task {
-    position: fixed;
+    position: absolute;
     bottom: 20px;
     right: 20px;
 }
@@ -194,6 +194,10 @@ md-list-item {
 }
 
 .right-sidenav .md-block input::-webkit-input-placeholder {
+    color: rgba(163, 163, 163, 0.65);
+}
+
+.right-sidenav .md-block input::-moz-placeholder {
     color: rgba(163, 163, 163, 0.65);
 }
 
